@@ -1,0 +1,4 @@
+database/*.db
+prompt.tx
+.DS_Store
+Thumbs.db

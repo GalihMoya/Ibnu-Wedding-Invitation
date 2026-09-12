@@ -253,8 +253,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Lightbox Modal Galeri
-  initLightbox();
+  // Inisialisasi Galeri Slideshow Perlahan
+  initGallerySlideshow();
 
   // Form RSVP Handler
   initRSVPForm();
@@ -428,14 +428,34 @@ function saveWishes(wishes) {
   localStorage.setItem("wedding_wishes", JSON.stringify(wishes));
 }
 
-function renderWishes() {
+async function renderWishes() {
   const wishesList = document.getElementById("wishes-list");
   const countEl = document.getElementById("wishes-count");
   if (!wishesList) return;
 
+  try {
+    const response = await fetch("api/get_wishes.php");
+    if (response.ok) {
+      const result = await response.json();
+      if (result.success && Array.isArray(result.data)) {
+        displayWishesList(result.data);
+        if (countEl) countEl.textContent = result.count ?? result.data.length;
+        return;
+      }
+    }
+  } catch (err) {
+    console.info("Fetching wishes from API failed, using fallback storage:", err);
+  }
+
+  // Fallback ke LocalStorage jika API tidak tersedia
   const wishes = getWishes();
   if (countEl) countEl.textContent = wishes.length;
+  displayWishesList(wishes);
+}
 
+function displayWishesList(wishes) {
+  const wishesList = document.getElementById("wishes-list");
+  if (!wishesList) return;
   wishesList.innerHTML = "";
 
   wishes.forEach(item => {
@@ -450,7 +470,7 @@ function renderWishes() {
       badgeText = "Ragu-ragu";
     }
 
-    const firstLetter = item.name.trim().charAt(0).toUpperCase() || "T";
+    const firstLetter = item.name ? item.name.trim().charAt(0).toUpperCase() : "T";
 
     const itemEl = document.createElement("div");
     itemEl.className = "wish-item";
@@ -472,9 +492,10 @@ function renderWishes() {
 
 function initRSVPForm() {
   const form = document.getElementById("form-rsvp");
+  const submitBtn = document.getElementById("btn-submit-rsvp");
   if (!form) return;
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const name = document.getElementById("rsvp-name").value.trim();
@@ -487,21 +508,48 @@ function initRSVPForm() {
       return;
     }
 
-    const newWish = {
-      name,
-      status,
-      pax,
-      message,
-      time: "Baru saja"
-    };
+    const originalBtnHTML = submitBtn ? submitBtn.innerHTML : "";
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Mengirim Konfirmasi...';
+    }
 
-    const wishes = getWishes();
-    wishes.unshift(newWish);
-    saveWishes(wishes);
-    renderWishes();
+    try {
+      const res = await fetch("api/save_rsvp.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, status, pax, message })
+      });
 
-    form.reset();
-    showToast("🎉 Terima kasih atas ucapan dan konfirmasi kehadiran Anda!");
+      const result = await res.json();
+
+      if (result.success && result.data) {
+        form.reset();
+        showToast("🎉 Terima kasih atas ucapan dan konfirmasi kehadiran Anda!");
+        // Re-render daftar ucapan terbaru dari database
+        renderWishes();
+      } else {
+        throw new Error(result.message || "Gagal menyimpan");
+      }
+    } catch (err) {
+      console.warn("API save error, fallback to local storage:", err);
+      // Fallback ke LocalStorage jika offline
+      const newWish = { name, status, pax, message, time: "Baru saja" };
+      const wishes = getWishes();
+      wishes.unshift(newWish);
+      saveWishes(wishes);
+      displayWishesList(wishes);
+      const countEl = document.getElementById("wishes-count");
+      if (countEl) countEl.textContent = wishes.length;
+
+      form.reset();
+      showToast("🎉 Terima kasih atas ucapan dan konfirmasi kehadiran Anda!");
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnHTML;
+      }
+    }
   });
 }
 
@@ -512,32 +560,87 @@ function escapeHTML(str) {
 }
 
 /* =========================================================
-   6. LIGHTBOX MODAL FOR GALLERY
+   6. SINGLE-IMAGE SLOW SLIDESHOW GALLERY ENGINE
    ========================================================= */
-function initLightbox() {
-  const modal = document.getElementById("lightbox-modal");
-  const modalImg = document.getElementById("lightbox-img");
-  const closeBtn = document.getElementById("lightbox-close");
+function initGallerySlideshow() {
+  const container = document.getElementById("gallery-slideshow");
+  const slides = document.querySelectorAll(".slide-item");
+  const dots = document.querySelectorAll(".slide-dot");
+  const prevBtn = document.getElementById("btn-slide-prev");
+  const nextBtn = document.getElementById("btn-slide-next");
+  const counter = document.getElementById("slide-counter");
 
-  if (!modal || !modalImg) return;
+  if (!slides || slides.length === 0) return;
 
-  document.querySelectorAll(".gallery-item").forEach(item => {
-    item.addEventListener("click", () => {
-      const fullSrc = item.getAttribute("data-full");
-      if (fullSrc) {
-        modalImg.src = fullSrc;
-        modal.classList.remove("hide");
-      }
+  let currentIndex = 0;
+  let slideInterval = null;
+  const slideDuration = 5000; // Pergantian perlahan setiap 5 detik
+
+  function updateSlide(newIndex) {
+    slides[currentIndex].classList.remove("active");
+    if (dots[currentIndex]) dots[currentIndex].classList.remove("active");
+
+    currentIndex = (newIndex + slides.length) % slides.length;
+
+    slides[currentIndex].classList.add("active");
+    if (dots[currentIndex]) dots[currentIndex].classList.add("active");
+
+    if (counter) {
+      counter.textContent = `${currentIndex + 1} / ${slides.length}`;
+    }
+  }
+
+  function nextSlide() {
+    updateSlide(currentIndex + 1);
+  }
+
+  function prevSlide() {
+    updateSlide(currentIndex - 1);
+  }
+
+  function startAutoPlay() {
+    if (slideInterval) clearInterval(slideInterval);
+    slideInterval = setInterval(nextSlide, slideDuration);
+  }
+
+  function pauseAutoPlay() {
+    if (slideInterval) {
+      clearInterval(slideInterval);
+      slideInterval = null;
+    }
+  }
+
+  // Event Listeners
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      nextSlide();
+      startAutoPlay();
+    });
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", () => {
+      prevSlide();
+      startAutoPlay();
+    });
+  }
+
+  dots.forEach((dot, idx) => {
+    dot.addEventListener("click", () => {
+      updateSlide(idx);
+      startAutoPlay();
     });
   });
 
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => modal.classList.add("hide"));
+  // Jeda saat hover agar pengguna nyaman menikmati foto
+  if (container) {
+    container.addEventListener("mouseenter", pauseAutoPlay);
+    container.addEventListener("mouseleave", startAutoPlay);
+    container.addEventListener("touchstart", pauseAutoPlay, { passive: true });
+    container.addEventListener("touchend", startAutoPlay, { passive: true });
   }
 
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) modal.classList.add("hide");
-  });
+  startAutoPlay();
 }
 
 /* =========================================================
