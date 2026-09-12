@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Wedding of Ibnu & Adinda | Undangan Pernikahan</title>
+  <meta name="description" content="Undangan Pernikahan Resmi Ibnu & Adinda. Kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu.">
+  
+  <!-- Open Graph / Meta Preview -->
+  <meta property="og:title" content="The Wedding of Ibnu & Adinda">
+  <meta property="og:description" content="Walimatul 'Ursy - Kami mengundang Bapak/Ibu/Saudara/i untuk hadir di hari bahagia kami.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80">
+
+  <!-- Google Fonts: Cormorant Garamond, Great Vibes, Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Decorative Canvas for Floating Petals/Sparkles -->
+  <canvas id="sparkle-canvas"></canvas>
+
+  <!-- ========================================== -->
+  <!-- 1. COVER / OPENING GATE (POPUP OVERLAY) -->
+  <!-- ========================================== -->
+  <div id="wedding-cover" class="cover-screen">
+    <div class="cover-background" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=80');">
+      <div class="cover-overlay"></div>
+    </div>
+    <div class="cover-card glass-panel animate-fade-in-up">
+      <div class="badge-pill">The Wedding Celebration</div>
+      <p class="arabic-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+      <h1 class="couple-title">
+        <!-- CATATAN DEVELOPER: Nama mempelai dummy di cover -->
+        <span class="groom-name">Ibnu</span>
+        <span class="ampersand">&</span>
+        <span class="bride-name">Adinda</span>
+      </h1>
+      <p class="event-date-display"><i class="fa-regular fa-calendar-heart"></i> Sabtu, 24 Oktober 2026</p>
+      
+      <div class="guest-box">
+        <p class="guest-to">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
+        <h3 id="guest-name" class="guest-recipient">Tamu Undangan Terhormat</h3>
+        <p class="guest-note">*Mohon maaf bila ada kesalahan penulisan nama/gelar</p>
+      </div>
+
+      <button id="btn-open-invitation" class="btn-royal btn-open" aria-label="Buka Undangan dan Mulai Auto-Scroll">
+        <i class="fa-solid fa-envelope-open-text"></i> Buka Undangan
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- FLOATING CONTROLS (MUSIC & AUTO-SCROLL) -->
+  <!-- ========================================== -->
+  <div id="floating-controls" class="floating-controls hide">
+    <!-- Music Button -->
+    <button id="btn-music" class="control-btn" title="Putar / Hentikan Musik" aria-label="Toggle Musik">
+      <i class="fa-solid fa-compact-disc rotating"></i>
+      <span class="btn-tooltip">Musik</span>
+    </button>
+    
+    <!-- Auto-Scroll Toggle & Status -->
+    <button id="btn-toggle-autoscroll" class="control-btn active" title="Jeda / Lanjutkan Auto-Scroll" aria-label="Toggle Auto Scroll">
+      <i class="fa-solid fa-angles-down autoscroll-icon"></i>
+      <span class="btn-tooltip" id="autoscroll-tooltip">Auto Scroll Aktif</span>
+    </button>
+
+    <!-- Quick Jump to RSVP -->
+    <a href="#rsvp-form" class="control-btn" title="Langsung ke Form Kehadiran" aria-label="Ke Form Kehadiran">
+      <i class="fa-solid fa-clipboard-check"></i>
+      <span class="btn-tooltip">RSVP</span>
+    </a>
+  </div>
+
+  <!-- Auto-Scroll Status Banner (Floating Banner) -->
+  <div id="autoscroll-banner" class="autoscroll-banner hide">
+    <div class="autoscroll-banner-content">
+      <span class="pulse-dot"></span>
+      <span id="autoscroll-banner-text">Menggulir otomatis secara perlahan ke Form Kehadiran...</span>
+      <button id="btn-pause-autoscroll" class="btn-pill-action">Jeda</button>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MAIN INVITATION CONTENT -->
+  <!-- ========================================== -->
+  <main id="main-content" class="main-content">
+
+    <!-- HERO / BANNER UTAMA -->
+    <section id="hero" class="hero-section">
+      <div class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=80');">
+        <div class="hero-overlay"></div>
+      </div>
+      <div class="container hero-content text-center">
+        <span class="sub-heading">Walimatul 'Ursy</span>
+        <h2 class="hero-names">Ibnu & Adinda</h2>
+        <div class="gold-divider"><span>❦</span></div>
+        <p class="hero-countdown-label">Menghitung Hari Menuju Momen Bahagia</p>
+        
+        <!-- COUNTDOWN TIMER -->
+        <div id="countdown-timer" class="countdown-grid">
+          <div class="timer-box">
+            <span id="timer-days" class="timer-number">00</span>
+            <span class="timer-label">Hari</span>
+          </div>
+          <div class="timer-box">
+            <span id="timer-hours" class="timer-number">00</span>
+            <span class="timer-label">Jam</span>
+          </div>
+          <div class="timer-box">
+            <span id="timer-minutes" class="timer-number">00</span>
+            <span class="timer-label">Menit</span>
+          </div>
+          <div class="timer-box">
+            <span id="timer-seconds" class="timer-number">00</span>
+            <span class="timer-label">Detik</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AYAT SUCI AL-QURAN -->
+    <section class="section-quote container text-center">
+      <div class="quote-card glass-panel">
+        <i class="fa-solid fa-quote-left quote-icon"></i>
+        <p class="arabic-verse">
+          وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُمْ مِنْ أَنْفُسِكُمْ أَزْوَاجًا لِتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُمْ مَوَدَّةً وَرَحْمَةً ۚ إِنَّ فِي ذَٰلِكَ لَآيَاتٍ لِقَوْمٍ يَتَفَكَّرُونَ
+        </p>
+        <p class="quote-translation">
+          "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang. Sungguh, pada yang demikian itu benar-benar terdapat tanda-tanda bagi kaum yang berpikir."
+        </p>
+        <span class="quote-source">— QS. Ar-Rum: 21 —</span>
+      </div>
+    </section>
+
+    <!-- PROFIL MEMPELAI (BRIDE & GROOM) -->
+    <!-- CATATAN DEVELOPER: Bagian nama dan foto mempelai di bawah ini dapat diubah sewaktu-waktu -->
+    <section id="couple" class="section-couple container">
+      <div class="section-header text-center">
+        <span class="section-badge">Pasangan Pengantin</span>
+        <h2 class="section-title">Mempelai Pria & Wanita</h2>
+        <p class="section-desc">Dengan memohon rahmat dan ridho Allah Subhanahu Wa Ta'ala, kami bermaksud mengikat janji suci pernikahan.</p>
+        <div class="gold-divider"><span>❦</span></div>
+      </div>
+
+      <div class="couple-grid">
+        <!-- MEMPELAI PRIA (GROOM) -->
+        <div class="couple-card glass-panel text-center">
+          <div class="photo-frame-wrapper">
+            <div class="photo-frame">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80" alt="Foto Mempelai Pria (Dummy)" class="couple-photo">
+            </div>
+          </div>
+          <h3 class="couple-person-name">Raden Ibnu Pratama, S.Kom.</h3>
+          <p class="couple-parents">
+            Putra pertama dari pasangan<br>
+            <strong>Bpk. Bambang Sulistyo</strong> &amp; <strong>Ibu Siti Rahmawati</strong>
+          </p>
+          <div class="couple-social">
+            <a href="#" class="social-link" title="Instagram"><i class="fa-brands fa-instagram"></i> @ibnu_pratama</a>
+          </div>
+        </div>
+
+        <div class="couple-center-divider">
+          <div class="center-heart">
+            <i class="fa-solid fa-heart"></i>
+          </div>
+        </div>
+
+        <!-- MEMPELAI WANITA (BRIDE) -->
+        <div class="couple-card glass-panel text-center">
+          <div class="photo-frame-wrapper">
+            <div class="photo-frame">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" alt="Foto Mempelai Wanita (Dummy)" class="couple-photo">
+            </div>
+          </div>
+          <h3 class="couple-person-name">Putri Adinda Larasati, S.M.</h3>
+          <p class="couple-parents">
+            Putri bungsu dari pasangan<br>
+            <strong>Bpk. Hartono Wibowo</strong> &amp; <strong>Ibu Sri Handayani</strong>
+          </p>
+          <div class="couple-social">
+            <a href="#" class="social-link" title="Instagram"><i class="fa-brands fa-instagram"></i> @adinda_larasati</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACARA & DETAIL WAKTU (EVENTS) -->
+    <section id="events" class="section-events container">
+      <div class="section-header text-center">
+        <span class="section-badge">Save The Date</span>
+        <h2 class="section-title">Rangkaian Acara</h2>
+        <p class="section-desc">Insya Allah acara pernikahan kami akan diselenggarakan pada:</p>
+        <div class="gold-divider"><span>❦</span></div>
+      </div>
+
+      <div class="events-grid">
+        <!-- AKAD NIKAH -->
+        <div class="event-card glass-panel">
+          <div class="event-icon"><i class="fa-solid fa-ring"></i></div>
+          <h3 class="event-type">Akad Nikah</h3>
+          <div class="event-divider"></div>
+          <p class="event-date"><i class="fa-regular fa-calendar-check"></i> Sabtu, 24 Oktober 2026</p>
+          <p class="event-time"><i class="fa-regular fa-clock"></i> Pukul 08.00 - 10.00 WIB</p>
+          <div class="event-location">
+            <h4><i class="fa-solid fa-location-dot"></i> Masjid Raya Al-Ikhlas</h4>
+            <p>Jl. Sudirman No. 45, Kebayoran Baru, Jakarta Selatan</p>
+          </div>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn-outline-royal">
+            <i class="fa-solid fa-map-location-dot"></i> Lihat Google Maps
+          </a>
+        </div>
+
+        <!-- RESEPSI PERNIKAHAN -->
+        <div class="event-card glass-panel featured-event">
+          <div class="event-badge-top">Acara Utama</div>
+          <div class="event-icon"><i class="fa-solid fa-champagne-glasses"></i></div>
+          <h3 class="event-type">Resepsi Pernikahan</h3>
+          <div class="event-divider"></div>
+          <p class="event-date"><i class="fa-regular fa-calendar-check"></i> Sabtu, 24 Oktober 2026</p>
+          <p class="event-time"><i class="fa-regular fa-clock"></i> Pukul 11.00 - 14.00 WIB</p>
+          <div class="event-location">
+            <h4><i class="fa-solid fa-location-dot"></i> Grand Ballroom Hotel Mulia</h4>
+            <p>Jl. Asia Afrika No. 1, Senayan, Jakarta Pusat</p>
+          </div>
+          <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn-royal">
+            <i class="fa-solid fa-map-location-dot"></i> Lihat Google Maps
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOVE STORY / PERJALANAN CINTA -->
+    <section id="story" class="section-story container">
+      <div class="section-header text-center">
+        <span class="section-badge">Perjalanan Kami</span>
+        <h2 class="section-title">Kisah Cinta Kita</h2>
+        <div class="gold-divider"><span>❦</span></div>
+      </div>
+
+      <div class="story-timeline">
+        <div class="story-item">
+          <div class="story-dot"></div>
+          <div class="story-card glass-panel">
+            <span class="story-year">2021</span>
+            <h4>Awal Perjumpaan</h4>
+            <p>Pertemuan pertama kami bermula dari sebuah acara seminar kampus yang tak disengaja. Senyuman sederhana berlanjut menjadi percakapan hangat yang tak pernah kami duga akan sejauh ini.</p>
+          </div>
+        </div>
+
+        <div class="story-item">
+          <div class="story-dot"></div>
+          <div class="story-card glass-panel">
+            <span class="story-year">2023</span>
+            <h4>Menjalin Komitmen</h4>
+            <p>Setelah melewati berbagai cerita, canda tawa, dan saling mengenal kepribadian masing-masing, kami sepakat untuk melangkah ke komitmen yang lebih serius.</p>
+          </div>
+        </div>
+
+        <div class="story-item">
+          <div class="story-dot"></div>
+          <div class="story-card glass-panel">
+            <span class="story-year">2025</span>
+            <h4>Momen Lamaran</h4>
+            <p>Dengan disaksikan kedua keluarga besar yang penuh kehangatan, Ibnu resmi meminang Adinda untuk menjadi teman hidup selamanya.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALERI FOTO (MOMENTS) -->
+    <section id="gallery" class="section-gallery container">
+      <div class="section-header text-center">
+        <span class="section-badge">Galeri Bahagia</span>
+        <h2 class="section-title">Momen Prewedding</h2>
+        <p class="section-desc">Setiap potret mengabadikan kisah kasih dan kebahagiaan kami berdua.</p>
+        <div class="gold-divider"><span>❦</span></div>
+      </div>
+
+      <div class="gallery-grid">
+        <div class="gallery-item" data-full="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80">
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80" alt="Prewedding 1" loading="lazy">
+          <div class="gallery-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+        </div>
+        <div class="gallery-item" data-full="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=80">
+          <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=600&q=80" alt="Prewedding 2" loading="lazy">
+          <div class="gallery-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+        </div>
+        <div class="gallery-item" data-full="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=80">
+          <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=600&q=80" alt="Prewedding 3" loading="lazy">
+          <div class="gallery-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+        </div>
+        <div class="gallery-item" data-full="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=80">
+          <img src="https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=600&q=80" alt="Prewedding 4" loading="lazy">
+          <div class="gallery-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+        </div>
+        <div class="gallery-item" data-full="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1200&q=80">
+          <img src="https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=600&q=80" alt="Prewedding 5" loading="lazy">
+          <div class="gallery-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+        </div>
+        <div class="gallery-item" data-full="https://images.unsplash.com/photo-1519225429980-715cb0215aed?auto=format&fit=crop&w=1200&q=80">
+          <img src="https://images.unsplash.com/photo-1519225429980-715cb0215aed?auto=format&fit=crop&w=600&q=80" alt="Prewedding 6" loading="lazy">
+          <div class="gallery-overlay"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TARGET AUTO-SCROLL: FORM KEHADIRAN TAMU -->
+    <!-- ========================================== -->
+    <section id="rsvp-form" class="section-rsvp container">
+      <div class="section-header text-center">
+        <span class="section-badge">Konfirmasi Kehadiran</span>
+        <h2 class="section-title">Buku Tamu &amp; RSVP</h2>
+        <p class="section-desc">Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir serta memberikan doa restu.</p>
+        <div class="gold-divider"><span>❦</span></div>
+      </div>
+
+      <div class="rsvp-wrapper glass-panel">
+        <form id="form-rsvp" class="rsvp-form">
+          <div class="form-group">
+            <label for="rsvp-name"><i class="fa-solid fa-user"></i> Nama Lengkap</label>
+            <input type="text" id="rsvp-name" name="name" class="form-control" placeholder="Contoh: Bpk. Ahmad Subagyo" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-half">
+              <label for="rsvp-status"><i class="fa-solid fa-circle-question"></i> Konfirmasi Kehadiran</label>
+              <select id="rsvp-status" name="status" class="form-control" required>
+                <option value="" disabled selected>Pilih Kehadiran Anda</option>
+                <option value="Hadir">✓ Ya, Saya Akan Hadir</option>
+                <option value="Masih Ragu">? Masih Ragu / Belum Pasti</option>
+                <option value="Tidak Hadir">✗ Maaf, Berhalangan Hadir</option>
+              </select>
+            </div>
+
+            <div class="form-group col-half">
+              <label for="rsvp-pax"><i class="fa-solid fa-users"></i> Jumlah Tamu</label>
+              <select id="rsvp-pax" name="pax" class="form-control">
+                <option value="1">1 Orang</option>
+                <option value="2">2 Orang</option>
+                <option value="3">3 Orang</option>
+                <option value="4">4 Orang</option>
+                <option value="5">5 Orang</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="rsvp-message"><i class="fa-solid fa-pen-fancy"></i> Ucapan &amp; Doa Restu</label>
+            <textarea id="rsvp-message" name="message" class="form-control" rows="4" placeholder="Tuliskan ucapan selamat dan doa terbaik Anda untuk kedua mempelai..." required></textarea>
+          </div>
+
+          <button type="submit" id="btn-submit-rsvp" class="btn-royal btn-block">
+            <i class="fa-solid fa-paper-plane"></i> Kirim Konfirmasi &amp; Doa
+          </button>
+        </form>
+
+        <!-- LIVE WISHES WALL (BUKU UCAPAN REALTIME) -->
+        <div class="wishes-section">
+          <h3 class="wishes-title"><i class="fa-solid fa-comments"></i> Ucapan &amp; Doa Restu (<span id="wishes-count">0</span>)</h3>
+          <div id="wishes-list" class="wishes-list">
+            <!-- Wishes will be dynamically injected here -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AMPLOP DIGITAL / WEDDING GIFT -->
+    <section id="gift" class="section-gift container text-center">
+      <div class="section-header">
+        <span class="section-badge">Tanda Kasih</span>
+        <h2 class="section-title">Amplop Digital</h2>
+        <p class="section-desc">Doa restu Anda merupakan karunia terindah bagi kami. Namun jika ingin memberikan tanda kasih secara digital, Anda dapat mentransfer melalui rekening di bawah ini:</p>
+        <div class="gold-divider"><span>❦</span></div>
+      </div>
+
+      <div class="gift-cards-grid">
+        <!-- REKENING 1: BCA -->
+        <div class="gift-card glass-panel">
+          <div class="bank-logo">BANK BCA</div>
+          <p class="account-number" id="acc-bca">1234 5678 9012</p>
+          <p class="account-name">a.n. Raden Ibnu Pratama</p>
+          <button class="btn-copy btn-pill-action" data-copy="123456789012">
+            <i class="fa-regular fa-copy"></i> Salin No. Rekening
+          </button>
+        </div>
+
+        <!-- REKENING 2: MANDIRI -->
+        <div class="gift-card glass-panel">
+          <div class="bank-logo">BANK MANDIRI</div>
+          <p class="account-number" id="acc-mandiri">9876 5432 1098</p>
+          <p class="account-name">a.n. Putri Adinda Larasati</p>
+          <button class="btn-copy btn-pill-action" data-copy="987654321098">
+            <i class="fa-regular fa-copy"></i> Salin No. Rekening
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PENUTUP & FOOTER -->
+    <footer class="footer-section text-center">
+      <div class="container">
+        <p class="footer-quote">
+          "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu kepada kedua mempelai."
+        </p>
+        <h3 class="footer-names">Ibnu &amp; Adinda</h3>
+        <p class="footer-thanks">Keluarga Besar Bpk. Bambang Sulistyo &amp; Bpk. Hartono Wibowo</p>
+        <div class="footer-bottom">
+          <p>&copy; 2026 The Wedding of Ibnu &amp; Adinda. All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- LIGHTBOX MODAL FOR GALLERY -->
+  <div id="lightbox-modal" class="lightbox-modal hide">
+    <span id="lightbox-close" class="lightbox-close">&times;</span>
+    <img id="lightbox-img" class="lightbox-img" src="" alt="Preview Foto">
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Custom Script -->
+  <script src="script.js"></script>
+</body>
+</html>
